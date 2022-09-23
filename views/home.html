@@ -5,8 +5,75 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="home.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400&family=Reem+Kufi+Ink&family=Roboto:ital,wght@0,300;1,100&display=swap" rel="stylesheet">
 </head>
 <body>
-    HelloHelloHelloHelloHelloWorld
+    <div class="board">
+        <div class="boardOutline">
+            {% for item in exPost %}
+            <div class="boardItem">
+                <div class="leftItem">
+                    <div class="tag">
+                        {% if item.dataValues.CategoryId == 1 %}
+                            🥰자유게시판
+                        {% elif item.dataValues.CategoryId == 2 %}
+                            🤡사진게시판
+                        {% else %}
+                            🎬왁자지껄
+                        {% endif %}
+                    </div>
+                    <div class="title">
+                        {{ item.dataValues.title }}
+                    </div>
+                </div>
+                <div class="rightItem">
+                    <div class="writer">
+                        {{ item.dataValues.User.nickname }}
+                    </div>
+                    <div class="time">
+                        {% if item.dataValues.createdAt.getHours() < 10 %}
+                            0{{ item.dataValues.createdAt.getHours() }}
+                        {% else %}
+                            {{ item.dataValues.createdAt.getHours() }}
+                        {% endif %}
+                        {% if item.dataValues.createdAt.getMinutes() < 10 %}
+                            :0{{ item.dataValues.createdAt.getMinutes() }}
+                        {% else %}
+                            :{{ item.dataValues.createdAt.getMinutes() }}
+                        {% endif %}
+                    </div>
+                    <div class="views">
+                        {{ item.dataValues.views }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <div class="lowPanel">
+                <div class="panelHighItem">
+                    {% if searchPage > 0 %}
+                    <div class="before">
+                        {% set beforeButton = (searchPage%10)*10 %}
+                        <a href="home?page={{beforeButton}}"> 이전 </a>
+                    </div>
+                    <div class="symbol">|</div>
+                    {% endif %}
+                    {% for i in range((searchPage*10)+1, (searchPage*10)+checkLength) %}
+                    <form method="get">
+                        <!-- <a name="page" value={{i}} class="pageItem">{{ i }}</a> -->
+                        <a href="home?page={{i}}" class="pageItem">{{i}}</a>
+                    </form>
+                    {%- endfor %}
+                    {% if checkLength == 11 %}
+                    <div class="symbol">|</div>
+                    <div class="next">
+                        {% set nextButton = (searchPage*10)+11 %}
+                        <a href="home?page={{nextButton}}">다음 ></a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
