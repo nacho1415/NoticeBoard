@@ -9,8 +9,16 @@ module.exports = class Post extends Model {
                     type: DataTypes.STRING(100),
                     allowNull: true
                 },
+                content: {
+                    type: DataTypes.TEXT,
+                    allowNull: false
+                },
                 views: {
-                    type: DataTypes.STRING(100),
+                    type: DataTypes.INTEGER,
+                    allowNull: true,
+                }, 
+                likes: {
+                    type: DataTypes.INTEGER,
                     allowNull: true,
                 }
             },
@@ -27,5 +35,8 @@ module.exports = class Post extends Model {
     static associate(db) {
         db.Post.belongsTo(db.User)
         db.Post.belongsTo(db.Category)
+        db.Post.hasMany(db.Comment, {
+            as: 'thisComments'
+        })
     }
 }

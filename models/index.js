@@ -3,11 +3,13 @@ const Sequelize = require("sequelize");
 const User = require('./user')
 const Post = require('./post')
 const Category = require('./category')
+const Comment = require('./comment')
 
 const db = {};
 db.User = User
 db.Post = Post
 db.Category = Category
+db.Comment = Comment
 
 const env = process.env.NODE_ENV || "development";
 const config = require("../config/config")[env];

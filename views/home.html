@@ -5,12 +5,68 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="/css/home.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400&family=Reem+Kufi+Ink&family=Roboto:ital,wght@0,300;1,100&display=swap" rel="stylesheet">
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
 </head>
 <body>
     <div class="board">
-        <div class="boardOutline">
+        <div class="boardOutline"> 
+            <div class="authPanel">
+                <div class="loginOutLine">
+                    <div class="profilePanel">
+                        <img style="font-size: 24px;" src="https://mvp.microsoft.com/ko-kr/PublicProfile/Photo/4024653" alt="">
+                        <div class="loggedIn">
+                            <div class="nickname">
+                                님 환영합니다
+                            </div>
+                            <Button class="logout">
+                                로그이웃
+                            </Button>
+                        </div>
+                    </div>
+                    <div class="loginInPanel">
+                        <div class="identifyLogin">
+                            로그인
+                        </div>
+                        <div class="loginItem">
+                            <Input name="loginEmail" placeholder="아이디" class="emailInput">
+                            <div class="password flex">
+                                <Input type="password" name="loginPassword" placeholder="비밀번호" class="passwordInput">
+                            </div>
+                        </div>
+                        <button class="loginInButton">
+                            로그인
+                        </button>
+                    </div>
+                    <form action="/api/auth/signup" method="post">
+                        <div class="signupPanel">
+                            <div class="identifySignup">
+                                회원가입
+                            </div>
+                            <div class="signUpItem">
+                                <div class="email flex">
+                                    <Input name="signUpEmail" type="text" placeholder="이메일" class="emailInput">
+                                </div>
+                                <div class="password flex">
+                                    <Input type="password" name="signUpPassword" placeholder="비밀번호" class="passwordInput">
+                                </div>
+                                <div class="signUpnickname flex">
+                                    <Input name="signUpNickname" placeholder="닉네임" class="nicknameInput">
+                                </div>
+                            </div>
+                            <button class="signupButton">
+                                회원가입
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {%- set idx = 1 -%}
             {% for item in exPost %}
             <div class="boardItem">
                 <div class="leftItem">
@@ -23,9 +79,12 @@
                             🎬왁자지껄
                         {% endif %}
                     </div>
-                    <div class="title">
-                        {{ item.dataValues.title }}
-                    </div>
+                    {%- set temp = page + idx -%}
+                    <form method="get">
+                        <a href="home/{{temp}}" class="title">
+                            {{ item.dataValues.title }}
+                        </a>
+                    </form>
                 </div>
                 <div class="rightItem">
                     <div class="writer">
@@ -48,6 +107,8 @@
                     </div>
                 </div>
             </div>
+            
+            {%- set idx = idx+1 -%}
             {% endfor %}
             <div class="lowPanel">
                 <div class="panelHighItem">
@@ -76,4 +137,52 @@
         </div>
     </div>
 </body>
+<script>
+  
+    $(".loginInButton").click(function(){
+        var email = $(`input[name=loginEmail]`).val();
+        var password = $(`input[name=loginPassword]`).val();
+        const data = {
+            email: email,
+            password: password 
+        }
+        $.post("/api/auth/signin", data, function(data, status){
+            if (status ==='success') {
+                sessionStorage.setItem("accessToken", data.accessToken);
+                sessionStorage.setItem("nickname", data.exUser.nickname)
+                $(".nickname").text("")
+                $(".nickname").show()
+                $(".nickname").prepend(sessionStorage.getItem("nickname")+ "님 환영합니다");
+                $(".profilePanel").show();
+                $(".loginInPanel").hide();
+                $(".signupPanel").hide();
+            } else {
+                alert("실패: ", status)
+            }
+        }); 
+    });
+    
+    $('.logout').click(() => {
+        sessionStorage.clear()
+        $(".profilePanel").hide();
+        $(".loginInPanel").show();
+        $(".signupPanel").show();
+    })
+
+    if (sessionStorage.getItem("accessToken")) {
+        $(".nickname").show()
+        $(".nickname").prepend(sessionStorage.getItem("nickname")+ "님 환영합니다");
+        $(".profilePanel").show();
+        $(".loginInPanel").hide();
+        $(".signupPanel").hide();
+    } else {
+        $(".profilePanel").hide();
+        $(".loginInPanel").show();
+        $(".signupPanel").show();
+    }
+    
+
+</script>
+
+
 </html>

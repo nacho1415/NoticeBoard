@@ -11,12 +11,14 @@ module.exports = {
     let dummyPost = []
     for (let i = 0; i < 400; i++) {
         dummyPost.push({
-            title: faker.commerce.productDescription().substr(0, rand(10,40)),
+            title: faker.commerce.productDescription().substr(0, rand(10,15)),
             views: 0,
+            likes: 0,
             createdAt: new Date(),
             updatedAt: new Date(),
             UserId: rand(1, 30),
-            CategoryId: rand(1,3)
+            CategoryId: rand(1,3),
+            content: faker.lorem.lines(5)
         })
     }
     console.log(dummyPost)
